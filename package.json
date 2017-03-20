@@ -1,0 +1,23 @@
+{
+  "name": "locast",
+  "version": "0.0.1",
+  "description": "Broadcast your location",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js",
+    "build": "webpack --config webpack.config.js",
+    "start": "node index.js"
+  },
+  "keywords": [
+    "location",
+    "broadcast"
+  ],
+  "author": "newnakashima",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^2.2.1"
+  },
+  "dependencies": {
+    "express": "^4.15.2"
+  }
+}
