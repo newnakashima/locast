@@ -4,9 +4,10 @@
   "description": "Broadcast your location",
   "main": "index.js",
   "scripts": {
-    "test": "node index.js",
-    "build": "webpack --config webpack.config.js",
-    "start": "node index.js"
+    "test": "node out/index.js",
+    "build": "webpack --config webpack.config.js; babel-html -s src -d out",
+    "start": "node out/index.js",
+    "debug": "npm run build; npm start"
   },
   "keywords": [
     "location",
@@ -15,6 +16,9 @@
   "author": "newnakashima",
   "license": "ISC",
   "devDependencies": {
+    "babel-cli": "^6.24.0",
+    "babel-html": "^0.5.0",
+    "babel-preset-env": "^1.2.2",
     "webpack": "^2.2.1"
   },
   "dependencies": {

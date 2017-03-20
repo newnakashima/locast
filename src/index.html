@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style type="text/css">
+      html, body { height: 100%; margin: 0; padding: 0; }
+      #map { height: 100%; }
+    </style>
+    <script src="out/dist/bundle.js"></script>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script type="text/javascript">
+var geolocation = navigator.geolocation;
+if (!geolocation) {
+  alert("この端末では位置情報を取得することができません。");
+} 
+
+var map;
+function initMap(location) {
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: location,
+    zoom: 16,
+    zoomControl: true,
+    mapTypeControl: false,
+    scaleControl: true,
+    streetViewControl: false,
+    rotateControl: false
+  });
+
+  // Create a div to hold the control.
+  var controlDiv = document.createElement('div');
+
+  // Set CSS for the control border
+  var controlUI = document.createElement('div');
+  controlUI.style.backgroundColor = '#fff';
+  controlUI.style.border = '2px solid #fff';
+  controlUI.style.cursor = 'pointer';
+  controlUI.style.marginBottom = '22px';
+  controlUI.style.textAlign = 'center';
+  controlUI.title = 'Click to recenter the map';
+  controlDiv.appendChild(controlUI);
+
+  // Set CSS for the control interior
+  var controlText = document.createElement('div');
+  controlText.style.color = 'rgb(25,25,25)';
+  controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+  controlText.style.fontSize = '16px';
+  controlText.style.lineHeight = '38px';
+  controlText.style.paddingLeft = '5px';
+  controlText.style.paddingRight = '5px';
+  controlText.innerHTML = 'Center Map';
+  controlUI.appendChild(controlText);
+
+  google.maps.event.addDomListener(controlDiv, 'click', () => {
+    map.setCenter(location);
+  });
+
+  map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlDiv);
+}
+
+function detectBrowser() {
+  var useragent = navigator.userAgent;
+  var mapdiv = document.getElementById('map');
+
+  if (useragent.indexOf('iPhone') != -1 || useragent.indexOf('Android') != -1) {
+    mapdiv.style.width = '100%';
+    mapdiv.style.height = '100%';
+  } else {
+    // mapdiv.style.width = '600px';
+    // mapdiv.style.height = '800px';
+  }
+
+  var location = {};
+  geolocation.getCurrentPosition(p => {
+    location = {lat: p.coords.latitude, lng: p.coords.longitude};
+    console.log('success');
+    initMap(location);
+  }, () => {
+    alert("位置情報の取得に失敗しました。");
+    location = {lat: 41.850, lng: -87.650};
+    initMap(location);
+  }, {});
+}
+
+    </script>
+    <script async defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCm90tPyhq1Rt6gAc0W6QgHfO_htB9o77k&callback=detectBrowser&region=JA&v=3">
+    </script>
+  </body>
+</html>
