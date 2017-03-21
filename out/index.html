@@ -58,6 +58,11 @@ function initMap(location) {
   });
 
   map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlDiv);
+
+  var watchId = navigator.geolocation.watchPosition(function (p) {
+    var location = { lat: p.coords.latitude, lng: p.coords.longitude };
+    map.setCenter(location);
+  });
 }
 
 function detectBrowser() {
