@@ -62,7 +62,7 @@ function initMap(location) {
   var watchId = navigator.geolocation.watchPosition(function (p) {
     var location = { lat: p.coords.latitude, lng: p.coords.longitude };
     map.setCenter(location);
-  });
+  }, function () {}, { timeout: 10000 });
 }
 
 function detectBrowser() {
@@ -86,7 +86,7 @@ function detectBrowser() {
     alert("位置情報の取得に失敗しました。");
     location = { lat: 41.850, lng: -87.650 };
     initMap(location);
-  }, {});
+  }, { timeout: 10000 });
 }
 
     </script>
