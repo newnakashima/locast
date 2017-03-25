@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <style type="text/css">
       html, body { height: 100%; margin: 0; padding: 0; }
       #map { height: 100%; }
@@ -9,7 +10,7 @@
   </head>
   <body>
     <div id="map"></div>
-    <script type="text/javascript">
+    <script>
 'use strict';
 
 var geolocation = navigator.geolocation;
@@ -32,7 +33,9 @@ function initMap(location) {
   var marker = new google.maps.Marker({
     position: location,
     map: map,
-    title: 'Hello World!'
+    title: 'Hello World!',
+    icon: 'images/test.png',
+    draggable: true
   });
 
   // Create a div to hold the control.
@@ -60,14 +63,14 @@ function initMap(location) {
   controlUI.appendChild(controlText);
 
   google.maps.event.addDomListener(controlDiv, 'click', function () {
-    map.setCenter(location);
+    map.setCenter(marker.getPosition());
   });
 
   map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlDiv);
 
   var watchId = navigator.geolocation.watchPosition(function (p) {
     var location = { lat: p.coords.latitude, lng: p.coords.longitude };
-    map.setCenter(location);
+    marker.setPosition(location);
   }, function () {}, { timeout: 10000 });
 }
 
@@ -94,6 +97,7 @@ function detectBrowser() {
     initMap(location);
   }, { timeout: 10000 });
 }
+
 
     </script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCm90tPyhq1Rt6gAc0W6QgHfO_htB9o77k&amp;callback=detectBrowser&amp;region=JA&amp;v=3">

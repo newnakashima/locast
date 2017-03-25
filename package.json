@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "node out/index.js",
-    "build": "webpack --config webpack.config.js; babel-html -s src -d out",
+    "build": "webpack --config webpack.config.js --display-error-details; babel-html -s src -d out",
     "start": "node out/index.js",
     "debug": "npm run build; npm start"
   },
