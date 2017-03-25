@@ -29,6 +29,12 @@ function initMap(location) {
     rotateControl: false
   });
 
+  var marker = new google.maps.Marker({
+    position: location,
+    map: map,
+    title: 'Hello World!'
+  });
+
   // Create a div to hold the control.
   var controlDiv = document.createElement('div');
 
