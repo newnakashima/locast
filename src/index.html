@@ -6,12 +6,17 @@
       html, body { height: 100%; margin: 0; padding: 0; }
       #map { height: 100%; }
     </style>
-    <script src="out/dist/bundle.js"></script>
+    <script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+      crossorigin="anonymous"></script>
   </head>
   <body>
     <div id="map"></div>
+
+    <script src="out/dist/bundle.js"></script>
     <script>
-var geolocation = navigator.geolocation;
+    var geolocation = navigator.geolocation;
 if (!geolocation) {
   alert("この端末では位置情報を取得することができません。");
 } 
@@ -35,6 +40,31 @@ function initMap(location) {
     icon: 'images/test.png',
     draggable: true
   });
+
+  var content = `
+    <div id="cast-input">
+      <textarea name="feeling" id="feeling" placeholder="Type your feeling"></textarea>
+      <button type="button" name="cast-feeling" id="cast-feeling">cast</button>
+    </div>
+    <div id="cast-output">
+      <p id="cast-output-p"></p>
+    </div>
+  `;
+
+  var infowindow = new google.maps.InfoWindow({
+    content: content
+  });
+
+  marker.addListener('click', () => {
+    $('#cast-feeling').off('click', inputText);
+    infowindow.open(map, marker);
+    $('#cast-feeling').on('click', inputText);
+  });
+
+  var inputText = function(event) {
+    $('#cast-output-p').html($('#feeling').val().split('\n').join('<br>'));
+    $('#feeling').val('');
+  };
 
   // Create a div to hold the control.
   var controlDiv = document.createElement('div');
@@ -71,7 +101,7 @@ function initMap(location) {
     marker.setPosition(location);
   }, () => {
 
-  }, {timeout:10000});
+  }, {timeout:3000});
 }
 
 function detectBrowser() {
@@ -79,12 +109,12 @@ function detectBrowser() {
   var mapdiv = document.getElementById('map');
 
   if (useragent.indexOf('iPhone') != -1 || useragent.indexOf('Android') != -1) {
-    mapdiv.style.width = '100%';
-    mapdiv.style.height = '100%';
+    // when opened with smartphones
   } else {
-    // mapdiv.style.width = '600px';
-    // mapdiv.style.height = '800px';
+    // pc or something else
   }
+  mapdiv.style.width = '100%';
+  mapdiv.style.height = '100%';
 
   var location = {};
   geolocation.getCurrentPosition(p => {
@@ -95,10 +125,8 @@ function detectBrowser() {
     alert("位置情報の取得に失敗しました。");
     location = {lat: 41.850, lng: -87.650};
     initMap(location);
-  }, {timeout:10000});
+  }, {timeout:3000});
 }
-
-
     </script>
     <script async defer
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCm90tPyhq1Rt6gAc0W6QgHfO_htB9o77k&callback=detectBrowser&region=JA&v=3">

@@ -6,99 +6,116 @@
       html, body { height: 100%; margin: 0; padding: 0; }
       #map { height: 100%; }
     </style>
-    <script src="out/dist/bundle.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   </head>
   <body>
     <div id="map"></div>
+
+    <script src="out/dist/bundle.js"></script>
     <script>
-'use strict';
-
-var geolocation = navigator.geolocation;
-if (!geolocation) {
-  alert("この端末では位置情報を取得することができません。");
-}
-
-var map;
-function initMap(location) {
-  map = new google.maps.Map(document.getElementById('map'), {
-    center: location,
-    zoom: 16,
-    zoomControl: true,
-    mapTypeControl: false,
-    scaleControl: true,
-    streetViewControl: false,
-    rotateControl: false
-  });
-
-  var marker = new google.maps.Marker({
-    position: location,
-    map: map,
-    title: 'Hello World!',
-    icon: 'images/test.png',
-    draggable: true
-  });
-
-  // Create a div to hold the control.
-  var controlDiv = document.createElement('div');
-
-  // Set CSS for the control border
-  var controlUI = document.createElement('div');
-  controlUI.style.backgroundColor = '#fff';
-  controlUI.style.border = '2px solid #fff';
-  controlUI.style.cursor = 'pointer';
-  controlUI.style.marginBottom = '22px';
-  controlUI.style.textAlign = 'center';
-  controlUI.title = 'Click to recenter the map';
-  controlDiv.appendChild(controlUI);
-
-  // Set CSS for the control interior
-  var controlText = document.createElement('div');
-  controlText.style.color = 'rgb(25,25,25)';
-  controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
-  controlText.style.fontSize = '16px';
-  controlText.style.lineHeight = '38px';
-  controlText.style.paddingLeft = '5px';
-  controlText.style.paddingRight = '5px';
-  controlText.innerHTML = 'Center Map';
-  controlUI.appendChild(controlText);
-
-  google.maps.event.addDomListener(controlDiv, 'click', function () {
-    map.setCenter(marker.getPosition());
-  });
-
-  map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlDiv);
-
-  var watchId = navigator.geolocation.watchPosition(function (p) {
-    var location = { lat: p.coords.latitude, lng: p.coords.longitude };
-    marker.setPosition(location);
-  }, function () {}, { timeout: 10000 });
-}
-
-function detectBrowser() {
-  var useragent = navigator.userAgent;
-  var mapdiv = document.getElementById('map');
-
-  if (useragent.indexOf('iPhone') != -1 || useragent.indexOf('Android') != -1) {
-    mapdiv.style.width = '100%';
-    mapdiv.style.height = '100%';
-  } else {
-    // mapdiv.style.width = '600px';
-    // mapdiv.style.height = '800px';
-  }
-
-  var location = {};
-  geolocation.getCurrentPosition(function (p) {
-    location = { lat: p.coords.latitude, lng: p.coords.longitude };
-    console.log('success');
-    initMap(location);
-  }, function () {
-    alert("位置情報の取得に失敗しました。");
-    location = { lat: 41.850, lng: -87.650 };
-    initMap(location);
-  }, { timeout: 10000 });
-}
-
-
+    'use strict';
+    
+    var geolocation = navigator.geolocation;
+    if (!geolocation) {
+      alert("この端末では位置情報を取得することができません。");
+    }
+    
+    var map;
+    function initMap(location) {
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: location,
+        zoom: 16,
+        zoomControl: true,
+        mapTypeControl: false,
+        scaleControl: true,
+        streetViewControl: false,
+        rotateControl: false
+      });
+    
+      var marker = new google.maps.Marker({
+        position: location,
+        map: map,
+        title: 'Hello World!',
+        icon: 'images/test.png',
+        draggable: true
+      });
+    
+      var content = '\n    <div id="cast-input">\n      <textarea name="feeling" id="feeling" placeholder="Type your\n      feeling"></textarea>\n      <button type="button" name="cast-feeling" id="cast-feeling">cast</button>\n    </div>\n    <div id="cast-output">\n      <p id="cast-output-p"></p>\n    </div>\n  ';
+    
+      var infowindow = new google.maps.InfoWindow({
+        content: content
+      });
+    
+      marker.addListener('click', function () {
+        $('#cast-feeling').off('click', inputText);
+        infowindow.open(map, marker);
+        $('#cast-feeling').on('click', inputText);
+      });
+    
+      var inputText = function inputText(event) {
+        $('#cast-output-p').html($('#feeling').val().split('\n').join('<br>'));
+        $('#feeling').val('');
+      };
+    
+      // Create a div to hold the control.
+      var controlDiv = document.createElement('div');
+    
+      // Set CSS for the control border
+      var controlUI = document.createElement('div');
+      controlUI.style.backgroundColor = '#fff';
+      controlUI.style.border = '2px solid #fff';
+      controlUI.style.cursor = 'pointer';
+      controlUI.style.marginBottom = '22px';
+      controlUI.style.textAlign = 'center';
+      controlUI.title = 'Click to recenter the map';
+      controlDiv.appendChild(controlUI);
+    
+      // Set CSS for the control interior
+      var controlText = document.createElement('div');
+      controlText.style.color = 'rgb(25,25,25)';
+      controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+      controlText.style.fontSize = '16px';
+      controlText.style.lineHeight = '38px';
+      controlText.style.paddingLeft = '5px';
+      controlText.style.paddingRight = '5px';
+      controlText.innerHTML = 'Center Map';
+      controlUI.appendChild(controlText);
+    
+      google.maps.event.addDomListener(controlDiv, 'click', function () {
+        map.setCenter(marker.getPosition());
+      });
+    
+      map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlDiv);
+    
+      var watchId = navigator.geolocation.watchPosition(function (p) {
+        var location = { lat: p.coords.latitude, lng: p.coords.longitude };
+        marker.setPosition(location);
+      }, function () {}, { timeout: 3000 });
+    }
+    
+    function detectBrowser() {
+      var useragent = navigator.userAgent;
+      var mapdiv = document.getElementById('map');
+    
+      if (useragent.indexOf('iPhone') != -1 || useragent.indexOf('Android') != -1) {
+        // when opened with smartphones
+      } else {
+          // pc or something else
+        }
+      mapdiv.style.width = '100%';
+      mapdiv.style.height = '100%';
+    
+      var location = {};
+      geolocation.getCurrentPosition(function (p) {
+        location = { lat: p.coords.latitude, lng: p.coords.longitude };
+        console.log('success');
+        initMap(location);
+      }, function () {
+        alert("位置情報の取得に失敗しました。");
+        location = { lat: 41.850, lng: -87.650 };
+        initMap(location);
+      }, { timeout: 3000 });
+    }
     </script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCm90tPyhq1Rt6gAc0W6QgHfO_htB9o77k&amp;callback=detectBrowser&amp;region=JA&amp;v=3">
     </script>
