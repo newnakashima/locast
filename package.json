@@ -7,7 +7,9 @@
     "test": "node out/index.js",
     "build": "webpack --config webpack.config.js --display-error-details; babel-html -s src -d out",
     "start": "node out/index.js",
-    "debug": "npm run build; npm start"
+    "debug": "npm run build; npm start",
+    "devserver": "webpack-dev-server --open",
+    "watch": "webpack --progress --watch"
   },
   "keywords": [
     "location",
@@ -21,11 +23,20 @@
     "babel-loader": "^6.4.1",
     "babel-preset-env": "^1.2.2",
     "css-loader": "^0.27.3",
+    "extract-text-webpack-plugin": "^2.1.0",
+    "node-sass": "^4.5.1",
+    "sass-loader": "^6.0.3",
     "style-loader": "^0.16.0",
-    "webpack": "^2.2.1"
+    "webpack": "^2.2.1",
+    "webpack-dev-server": "^2.4.2"
   },
   "dependencies": {
+    "bulma": "^0.4.0",
     "express": "^4.15.2",
     "jquery": "^3.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/newnakashima/locast"
   }
 }
