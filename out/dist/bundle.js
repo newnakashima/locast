@@ -10384,7 +10384,7 @@ function initMap(location) {
         <button class="button is-primary" type="button" name="cast-feeling" id="cast-feeling">cast</button>
       </p>
     </div>
-    <div class="content" id="cast-output">
+    <div class="content is-medium" id="cast-output">
       <p id="cast-output-p"></p>
     </div>
   `;
@@ -10400,7 +10400,8 @@ function initMap(location) {
   });
 
   var inputText = function(event) {
-    __WEBPACK_IMPORTED_MODULE_1_jquery___default()('#cast-output-p').html(__WEBPACK_IMPORTED_MODULE_1_jquery___default()('#feeling').val().split('\n').join('<br>'));
+    var test = __WEBPACK_IMPORTED_MODULE_1_jquery___default()('#feeling').val().replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    __WEBPACK_IMPORTED_MODULE_1_jquery___default()('#cast-output-p').html(test.split('\n').join('<br>'));
     __WEBPACK_IMPORTED_MODULE_1_jquery___default()('#feeling').val('');
   };
 

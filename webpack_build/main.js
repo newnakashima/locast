@@ -40,7 +40,7 @@ function initMap(location) {
         <button class="button is-primary" type="button" name="cast-feeling" id="cast-feeling">cast</button>
       </p>
     </div>
-    <div class="content" id="cast-output">
+    <div class="content is-medium" id="cast-output">
       <p id="cast-output-p"></p>
     </div>
   `;
@@ -56,7 +56,8 @@ function initMap(location) {
   });
 
   var inputText = function(event) {
-    $('#cast-output-p').html($('#feeling').val().split('\n').join('<br>'));
+    var test = $('#feeling').val().replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    $('#cast-output-p').html(test.split('\n').join('<br>'));
     $('#feeling').val('');
   };
 
