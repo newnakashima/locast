@@ -10,8 +10,8 @@ const extractSass = new ExtractTextPlugin({
 
 module.exports = {
   entry: {
-    main: './webpack_build/main.js',
-    twitter: './webpack_build/twitter.js'
+    main: './assets/main.js',
+    twitter: './assets/twitter.js'
   },
   output: {
     filename: '[name].bundle.js',

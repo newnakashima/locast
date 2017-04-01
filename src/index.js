@@ -9,8 +9,8 @@ app.get('/', function(req, res) {
 });
 
 io.on('connection', function (socket) {
-  console.log("test");
-  console.log("testtest!");
+  console.log("connected");
+  console.log(socket.handshake.headers.host);
 });
 
 var port = process.env.PORT || 3000;
