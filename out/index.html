@@ -7,15 +7,9 @@
       html, body { height: 100%; margin: 0; padding: 0; }
       #map { height: 100%; }
     </style>
-    <script src="/socket.io/socket.io.js"></script>
   </head>
   <body>
     <div id="map"></div>
-    <script>
-      'use strict';
-      
-      var socket = io('http://localhost:3000');
-    </script>
     <script src="out/assets/main.bundle.js"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCm90tPyhq1Rt6gAc0W6QgHfO_htB9o77k&amp;callback=detectBrowser&amp;region=JA&amp;v=3">
     </script>

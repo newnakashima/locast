@@ -2,8 +2,8 @@
 
 var express = require('express');
 var app = express();
-var server = require('http').createServer(app);
-var io = require('socket.io').listen(server);
+var http = require('http').Server(app);
+var io = require('socket.io').listen(http);
 
 app.use(express.static('.'));
 app.get('/', function (req, res) {
@@ -16,9 +16,6 @@ io.on('connection', function (socket) {
 });
 
 var port = process.env.PORT || 3000;
-// app.listen(port, function() {
-//   console.log('Node Server is Listening port '+ port +'...');
-// });
-server.listen(port, function () {
+http.listen(port, function () {
   console.log('Node Server is Listening port ' + port + '...');
 });
