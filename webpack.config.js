@@ -9,10 +9,13 @@ const extractSass = new ExtractTextPlugin({
 });
 
 module.exports = {
-  entry: './webpack_build/main.js',
+  entry: {
+    main: './webpack_build/main.js',
+    twitter: './webpack_build/twitter.js'
+  },
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'out/dist')
+    filename: '[name].bundle.js',
+    path: path.resolve(__dirname, 'out/assets')
   },
   module: {
     rules: [{
