@@ -9,7 +9,8 @@
     "start": "node out/index.js",
     "debug": "npm run build; npm start",
     "devserver": "webpack-dev-server --open",
-    "watch": "webpack --progress --watch"
+    "watch": "webpack --progress --watch",
+    "mon": "nodemon out/index.js"
   },
   "keywords": [
     "location",
