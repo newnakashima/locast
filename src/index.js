@@ -10,6 +10,17 @@ app.get('/', function(req, res) {
 
 io.on('connection', function (socket) {
   console.log("connected");
+  socket.on('initMarker', data => {
+    socket.emit('initMarker', data);
+  });
+  socket.on('updatePosition', data => {
+    socket.emit('updatePosition', data);
+  });
+
+  socket.on('clickMarker', data => {
+    console.log('clickMarker');
+    socket.emit('clickMarker', data);
+  });
   console.log(socket.handshake.headers.host);
 });
 

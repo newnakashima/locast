@@ -4,7 +4,7 @@ import io from 'socket.io-client';
 
 window.$ = $;
 
-var socket = io.connect('http://localhost:3000');
+var socket = io.connect(location.protocol + "//" + location.host);
 
 var geolocation = navigator.geolocation;
 if (!geolocation) {
@@ -39,6 +39,11 @@ function initMap(location) {
     icon: 'images/test.png',
     draggable: true
   });
+  socket.emit('initMarker', {
+    ID: ID,
+    location: location
+  });
+  console.log("initMarker");
 
   var content = `
     <div class="field" id="cast-input">
@@ -68,6 +73,7 @@ function initMap(location) {
     infowindow.open(map, marker);
     $('#cast-feeling').on('click', inputText);
     $('#feeling').on('keydown', hitEnter);
+    socket.emit('clickMarker', {});
   });
 
   var inputText = function(event) {
@@ -113,6 +119,7 @@ function initMap(location) {
   var watchId = navigator.geolocation.watchPosition(p => {
     let location = {lat: p.coords.latitude, lng: p.coords.longitude};
     marker.setPosition(location);
+    console.log(ID);
     socket.emit("updatePosition", {
         id      : ID,
         location: location
@@ -120,6 +127,7 @@ function initMap(location) {
   }, () => {
 
   }, {timeout:3000});
+
 }
 
 function detectBrowser() {
@@ -145,5 +153,21 @@ function detectBrowser() {
     initMap(location);
   }, {timeout:3000});
 }
+
+socket.on('initMarker', data => {
+    console.log('initMarker', data);
+});
+
+socket.on('updatePosition', data => {
+    console.log('updatePosition', data);
+});
+
+socket.on('clickMarker', data => {
+    console.log('clickMarker!');
+})
+
+socket.on('test', data => {
+    console.log(data);
+});
 
 window.detectBrowser = detectBrowser;

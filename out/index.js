@@ -12,6 +12,17 @@ app.get('/', function (req, res) {
 
 io.on('connection', function (socket) {
   console.log("connected");
+  socket.on('initMarker', function (data) {
+    socket.emit('initMarker', data);
+  });
+  socket.on('updatePosition', function (data) {
+    socket.emit('updatePosition', data);
+  });
+
+  socket.on('clickMarker', function (data) {
+    console.log('clickMarker');
+    socket.emit('clickMarker', data);
+  });
   console.log(socket.handshake.headers.host);
 });
 
