@@ -19,7 +19,7 @@ io.on('connection', function (socket) {
 
   socket.on('clickMarker', data => {
     console.log('clickMarker');
-    socket.emit('clickMarker', data);
+    socket.broadcast.emit('clickMarker', data);
   });
   console.log(socket.handshake.headers.host);
 });
