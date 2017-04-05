@@ -4,7 +4,8 @@ import io from 'socket.io-client';
 
 window.$ = $;
 
-var socket = io.connect(location.protocol + "//" + location.host);
+// var socket = io.connect(location.protocol + "//" + location.host);
+var socket = io();
 
 var geolocation = navigator.geolocation;
 if (!geolocation) {

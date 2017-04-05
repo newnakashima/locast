@@ -19111,7 +19111,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 window.$ = __WEBPACK_IMPORTED_MODULE_1_jquery___default.a;
 
-var socket = __WEBPACK_IMPORTED_MODULE_2_socket_io_client___default.a.connect(location.protocol + "//" + location.host);
+// var socket = io.connect(location.protocol + "//" + location.host);
+var socket = __WEBPACK_IMPORTED_MODULE_2_socket_io_client___default()();
 
 var geolocation = navigator.geolocation;
 if (!geolocation) {
