@@ -13,6 +13,7 @@ if (!geolocation) {
 } 
 
 var map;
+var infowindow;
 const ID = (function() {
     let start = 48, end = 126;
     var res = "";
@@ -64,13 +65,14 @@ function initMap(location) {
     </div>
   `;
 
-  var infowindow = new google.maps.InfoWindow({
+  marker.infowindow = new google.maps.InfoWindow({
     content: content
   });
 
   marker.addListener('click', () => {
-    $('#cast-feeling').off('click', inputText);
-    $('#feeling').off('keydown', hitEnter);
+    if (infowindow != null) infowindow.close();
+    infowindow = marker.infowindow;
+    $('#cast-feeling').off('click', inputText); $('#feeling').off('keydown', hitEnter);
     infowindow.open(map, marker);
     $('#cast-feeling').on('click', inputText);
     $('#feeling').on('keydown', hitEnter);
@@ -78,14 +80,34 @@ function initMap(location) {
   });
 
   var inputText = function(event) {
-    var feeling = $('#feeling').val().replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    $('#cast-output-p').html(feeling.split('\n').join('<br>'));
+    var feeling = $('#feeling').val().replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .split('\n').join('<br>');
+    $('#cast-output-p').html(feeling);
+    socket.emit('cast feeling', {
+      ID: ID,
+      feeling: feeling,
+      location: location
+    });
     $('#feeling').val('');
   };
   var hitEnter = function(event) {
     if (((event.ctrlKey && !event.metaKey) || (!event.ctrlKey && event.metaKey)) && event.keyCode === 13)
       $('#cast-feeling').click();
   }
+
+  var watchId = navigator.geolocation.watchPosition(p => {
+    let location = {lat: p.coords.latitude, lng: p.coords.longitude};
+    marker.setPosition(location);
+    console.log(ID);
+    socket.emit("updatePosition", {
+        id      : ID,
+        location: location
+    });
+  }, () => {
+
+  }, {timeout:3000});
+
+
 
   // Create a div to hold the control.
   var controlDiv = document.createElement('div');
@@ -116,19 +138,6 @@ function initMap(location) {
   });
 
   map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlDiv);
-
-  var watchId = navigator.geolocation.watchPosition(p => {
-    let location = {lat: p.coords.latitude, lng: p.coords.longitude};
-    marker.setPosition(location);
-    console.log(ID);
-    socket.emit("updatePosition", {
-        id      : ID,
-        location: location
-    });
-  }, () => {
-
-  }, {timeout:3000});
-
 }
 
 function detectBrowser() {
@@ -156,19 +165,39 @@ function detectBrowser() {
 }
 
 socket.on('initMarker', data => {
-    console.log('initMarker', data);
+  console.log('initMarker', data);
 });
 
 socket.on('updatePosition', data => {
-    console.log('updatePosition', data);
+  console.log('updatePosition', data);
 });
 
 socket.on('clickMarker', data => {
-    console.log('clickMarker!');
-})
+  console.log('clickMarker!');
+});
 
-socket.on('test', data => {
-    console.log(data);
+socket.on('cast feeling', data => {
+  console.log('caught a feeling!');
+  var controlDiv = $('<div class="othersFeeling">');
+  var content = `
+    <div class="content is-medium" id="cast-output">
+      <p id="cast-output-p"></p>
+    </div>
+  `;
+  controlDiv.text(content);
+  var marker = new google.maps.Marker({
+    position: data.location,
+    map: map,
+    title: 'anon',
+    draggable: true
+  });
+  marker.infowindow = new google.maps.InfoWindow({content: content});
+  marker.addListener('click', (e) => {
+    if (infowindow != null) infowindow.close();
+    infowindow = marker.infowindow;
+    infowindow.open(map, marker);
+    $('#cast-output-p').html(data.feeling)
+  });
 });
 
 window.detectBrowser = detectBrowser;

@@ -23,6 +23,11 @@ io.on('connection', function (socket) {
     console.log('clickMarker');
     io.emit('clickMarker', data);
   });
+
+  socket.on('cast feeling', function (data) {
+    console.log(data);
+    socket.broadcast.emit('cast feeling', data);
+  });
   console.log(socket.handshake.headers.host);
 });
 
