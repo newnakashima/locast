@@ -14,6 +14,8 @@ if (!geolocation) {
 
 var map;
 var infowindow;
+var feelings = [];
+
 const ID = (function() {
     let start = 48, end = 126;
     var res = "";
@@ -82,11 +84,11 @@ function initMap(location) {
   var inputText = function(event) {
     var feeling = $('#feeling').val().replace(/</g, "&lt;").replace(/>/g, "&gt;")
       .split('\n').join('<br>');
-    $('#cast-output-p').html(feeling);
     socket.emit('cast feeling', {
       ID: ID,
       feeling: feeling,
-      location: location
+      location: location,
+      timestamp: new Date()
     });
     $('#feeling').val('');
   };
@@ -178,26 +180,87 @@ socket.on('clickMarker', data => {
 
 socket.on('cast feeling', data => {
   console.log('caught a feeling!');
-  var controlDiv = $('<div class="othersFeeling">');
-  var content = `
-    <div class="content is-medium" id="cast-output">
+  var initialLocation = true;
+  var minDistance = Number.MAX_VALUE;
+  var nearestMarker;
+  var nearFeeling = feelings.forEach(e => {
+    let a = {
+      lat: e.getPosition().lat(),
+      lng: e.getPosition().lng()
+    }
+    let b = data.location;
+    let distance = getDistance(a, b);
+    if (minDistance > distance && distance <= 0.005) {
+      minDistance = distance;
+      nearestMarker = e;
+    }
+  });
+  if (nearestMarker != null) {
+    initialLocation = false;
+    nearestMarker.feelingStack.push(data);
+  }
+  var marker;
+  if (initialLocation) {
+    marker = new google.maps.Marker({
+      position: data.location,
+      map: map,
+      title: 'a feeling',
+      draggable: true
+    });
+    marker.feelingStack = [data];
+    var content = `
+      <div class="content is-medium" id="cast-output">
       <p id="cast-output-p"></p>
-    </div>
-  `;
-  controlDiv.text(content);
-  var marker = new google.maps.Marker({
-    position: data.location,
-    map: map,
-    title: 'anon',
-    draggable: true
-  });
-  marker.infowindow = new google.maps.InfoWindow({content: content});
-  marker.addListener('click', (e) => {
-    if (infowindow != null) infowindow.close();
-    infowindow = marker.infowindow;
-    infowindow.open(map, marker);
-    $('#cast-output-p').html(data.feeling)
-  });
+      </div>
+      `;
+    marker.infowindow = new google.maps.InfoWindow({content: content});
+    marker.addListener('click', (e) => {
+      if (infowindow != null) infowindow.close();
+      infowindow = marker.infowindow;
+      infowindow.open(map, marker);
+      let sortedStack = marker.feelingStack.sort((a, b) => {
+        let aTime = new Date(a.timestamp),
+            bTime = new Date(b.timestamp);
+        if (aTime - bTime < 0) return 1;
+        if (aTime - bTime < 0) return -1;
+        return 0;
+      });
+      let feelingString = sortedStack.map(elem => {
+        let timeString = getTimestampString(new Date(elem.timestamp));
+        return `<div class="card">
+            <header class="card-header">
+              <p class="card-header-title">${timeString}</p>
+            </header>
+            <div class="card-content">
+              <p>${elem.feeling}</p>
+            </div>
+          </div>`;
+      }).join('');
+      $('#cast-output-p').html(feelingString);
+    });
+  } else {
+    marker = nearestMarker;
+  }
+  feelings.push(marker);
 });
+
+function getTimestampString(t) {
+  return t.getFullYear() + "年" + (t.getMonth() + 1 ) + "月" + t.getDate() + "日 " +
+    t.getHours() + "時" + t.getMinutes() + "分" + t.getSeconds() + "秒";
+}
+
+// return kilometers
+function getDistance(a, b) {
+  const earth_rad = 6378.137;
+  return earth_rad * Math.acos(Math.cos(radians(a.lat)) *
+    Math.cos(radians(b.lat))*
+    Math.cos(radians(b.lng) - radians(a.lng))+
+    Math.sin(radians(a.lat))*
+    Math.sin(radians(b.lat)));
+}
+
+function radians(deg) {
+  return deg * (Math.PI / 180);
+}
 
 window.detectBrowser = detectBrowser;

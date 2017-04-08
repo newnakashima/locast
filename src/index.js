@@ -24,7 +24,7 @@ io.on('connection', function (socket) {
 
   socket.on('cast feeling', data => {
     console.log(data);
-    socket.broadcast.emit('cast feeling', data);
+    io.emit('cast feeling', data);
   });
   console.log(socket.handshake.headers.host);
 });

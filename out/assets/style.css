@@ -6613,3 +6613,5 @@ label.panel-block:hover {
 
 #cast-output {
   max-height: 6em; }
+  #cast-output .card {
+    margin: 20px; }
