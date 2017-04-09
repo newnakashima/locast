@@ -6613,5 +6613,9 @@ label.panel-block:hover {
 
 #cast-output {
   max-height: 6em; }
-  #cast-output .card {
-    margin: 20px; }
+  #cast-output .feeling {
+    margin-bottom: .5em; }
+  #cast-output .timestamp {
+    margin-bottom: 0; }
+    #cast-output .timestamp h3 {
+      margin-bottom: 0; }

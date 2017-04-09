@@ -161,7 +161,7 @@ function detectBrowser() {
     initMap(location);
   }, () => {
     console.warn("位置情報の取得に失敗しました。");
-    location = {lat: 41.850, lng: -87.650};
+    location = {lat: 35.685175, lng: 139.7528};
     initMap(location);
   }, {timeout:3000});
 }
@@ -225,28 +225,33 @@ socket.on('cast feeling', data => {
         if (aTime - bTime < 0) return -1;
         return 0;
       });
-      let feelingString = sortedStack.map(elem => {
-        let timeString = getTimestampString(new Date(elem.timestamp));
-        return `<div class="card">
-            <header class="card-header">
-              <p class="card-header-title">${timeString}</p>
-            </header>
-            <div class="card-content">
-              <p>${elem.feeling}</p>
-            </div>
-          </div>`;
-      }).join('');
+      let feelingString = sortedStack.map(elem => createFeeling(elem)).join('');
       $('#cast-output-p').html(feelingString);
     });
+  } else if (infowindow == nearestMarker.infowindow && $('#cast-output-p').length > 0) {
+    $($('.feeling').get(0)).before(createFeeling(data));
+    marker = nearestMarker;
   } else {
     marker = nearestMarker;
   }
   feelings.push(marker);
 });
 
+function createFeeling(data) {
+  let timeString = getTimestampString(new Date(data.timestamp));
+  return `<div class="feeling">
+      <div class="content is-small timestamp">
+        <h3>${timeString}</h3>
+      </div>
+      <div class="content is-medium">
+        <p>${data.feeling}</p>
+      </div>
+    </div>`;
+}
 function getTimestampString(t) {
-  return t.getFullYear() + "年" + (t.getMonth() + 1 ) + "月" + t.getDate() + "日 " +
-    t.getHours() + "時" + t.getMinutes() + "分" + t.getSeconds() + "秒";
+  return t.toLocaleString();
+  // return t.getFullYear() + "年" + (t.getMonth() + 1 ) + "月" + t.getDate() + "日 " +
+  //   t.getHours() + "時" + t.getMinutes() + "分" + t.getSeconds() + "秒";
 }
 
 // return kilometers

@@ -1,14 +1,20 @@
 @import "~bulma/css/bulma.css";
 
 #feeling {
-  resize: none;
-  width: 30em;
-  min-height: 4em;
+    resize: none;
+    width: 30em;
+    min-height: 4em;
 }
 
 #cast-output {
-  max-height: 6em;
-  .card {
-    margin: 20px;
-  }
+    max-height: 6em;
+    .feeling {
+        margin-bottom: .5em;
+    }
+    .timestamp {
+        margin-bottom: 0;
+        h3 {
+            margin-bottom:0;
+        }
+    }
 }
