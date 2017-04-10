@@ -250,8 +250,6 @@ function createFeeling(data) {
 }
 function getTimestampString(t) {
   return t.toLocaleString();
-  // return t.getFullYear() + "年" + (t.getMonth() + 1 ) + "月" + t.getDate() + "日 " +
-  //   t.getHours() + "時" + t.getMinutes() + "分" + t.getSeconds() + "秒";
 }
 
 // return kilometers
