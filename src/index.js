@@ -44,7 +44,7 @@ var removeFeelings = function(db, find, callback) {
 };
 
 var indexCollection = function(db, index, callback) {
-  db.collection('documents').createIndex(
+  db.collection('feelings').createIndex(
       index,
       null,
       function(err, results) {
@@ -61,6 +61,12 @@ app.get('/', function(req, res) {
 io.on('connection', function (socket) {
   console.log("connected");
   socket.on('initMarker', data => {
+    MongoClient.connect(url, (err, db) => {
+      findFeelings(db, {}, res => {
+        console.log("findFeelings. data=" + res);
+        res.forEach(data => io.emit('cast feeling', data));
+      });
+    });
     io.emit('initMarker', data);
   });
   socket.on('updatePosition', data => {
